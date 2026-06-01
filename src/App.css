@@ -1,229 +1,412 @@
 :root {
-  --ms-purple: #4f46e5;
+  --ms-purple: #5c5fc8;
+  --ms-purple-hover: #4f46e5;
+  --ms-purple-active: #3e38b1;
   --ms-bg-light: #f3f2f1;
+  --ms-bg-hover: #edebe9;
   --ms-text-dark: #242424;
   --ms-text-muted: #616161;
+  --ms-green: #107c41;
+  --ms-border: rgba(0, 0, 0, 0.08);
+  --ms-shadow: 0px 8px 32px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.04);
 }
 
+/* Beautiful desktop backdrop mimicking Windows 11 Light theme Bloom wallpaper */
 body {
   margin: 0;
-  background-color: #e2e8f0;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  color: var(--ms-text-dark);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 80% 20%, rgba(220, 233, 255, 0.8), transparent 45%),
+              radial-gradient(circle at 20% 80%, rgba(246, 219, 245, 0.8), transparent 45%),
+              radial-gradient(circle at 50% 50%, rgba(225, 222, 250, 0.95), #e3e9f3);
+  font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Constrain view cleanly into the exact 21H2 Windows 11 Taskbar popup dimension box */
+/* 1:1 Pixel-Perfect Flyout Container */
 .ms-chat-container {
   width: 360px;
   height: 560px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--ms-shadow);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin: 20px auto;
-  border: 1px solid #e0e0e0;
+  position: relative;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-/* Top Header Profile & Grid Actions */
+/* Slick fade effect when loading screens */
+.ms-chat-container.transitioning {
+  opacity: 0.85;
+  transform: scale(0.99);
+}
+
+/* Header Area styling */
 .ms-chat-nav {
   padding: 16px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Michelle Vila Profile Header */
+.ms-profile-header {
+  display: flex;
+  align-items: center;
   gap: 12px;
-  border-bottom: 1px solid #f0f0f0;
+}
+
+.ms-profile-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .ms-profile-name {
-  font-size: 16px;
-  font-weight: 600;
+  color: var(--ms-text-dark);
+  font-size: 14px;
+  line-height: 18px;
 }
 
-.ms-nav-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.ms-nav-btn {
-  flex: 1;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #d2d2d2;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+.ms-presence-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 4px;
+  margin-top: 1px;
 }
 
-.meet-accent { background: var(--ms-purple); color: white; border: none; }
-.text-accent { background: white; color: var(--ms-text-dark); }
+.ms-presence-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--ms-green);
+  border-radius: 50%;
+  display: inline-block;
+}
 
-/* Body Content Lists */
+.ms-presence-text {
+  color: var(--ms-text-muted);
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.ms-chevron-icon {
+  font-size: 10px;
+  color: var(--ms-text-muted);
+  margin-left: 2px;
+  cursor: pointer;
+}
+
+/* 2-column layout for Meet and Chat buttons */
+.ms-nav-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.ms-nav-btn-col {
+  flex: 1;
+}
+
+/* Scrollable Conversation List Body */
 .ms-chat-body {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  display: flex;
+  flex-direction: column;
 }
 
-.ms-section-header {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--ms-text-muted);
-  padding-left: 8px;
-  margin-bottom: 6px;
+/* Recent items list container */
+.ms-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 8px 8px 8px;
+  gap: 2px;
 }
 
+/* Individual Conversation row item */
 .ms-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 8px;
+  padding: 10px 12px;
   border-radius: 6px;
   cursor: pointer;
-}
-
-.ms-item:hover { background: var(--ms-bg-light); }
-
-.ms-avatar-wrapper {
+  transition: background-color 0.15s cubic-bezier(0.1, 0.9, 0.2, 1);
   position: relative;
-  width: 38px;
-  height: 38px;
 }
 
-.ms-avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
+.ms-item:hover {
+  background-color: var(--ms-bg-light);
 }
 
-.ms-badge-online {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 9px;
-  height: 9px;
-  background: #107c41;
-  border: 1.5px solid white;
-  border-radius: 50%;
+.ms-item:active {
+  background-color: var(--ms-bg-hover);
 }
 
 .ms-item-details {
   flex: 1;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .ms-item-row {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
 }
 
 .ms-item-name {
-  font-size: 13px;
-  font-weight: 600;
+  color: var(--ms-text-dark);
+  font-size: 13.5px;
+  line-height: 18px;
 }
 
 .ms-item-time {
   font-size: 11px;
   color: var(--ms-text-muted);
+  white-space: nowrap;
 }
 
 .ms-item-preview {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--ms-text-muted);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin-top: 2px;
+  line-height: 16px;
 }
 
-/* Functional Thread Screen Override */
+/* Bottom Footer container */
+.ms-chat-footer {
+  height: 48px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(249, 249, 249, 0.8);
+  padding: 0 16px;
+}
+
+.ms-footer-action {
+  color: var(--ms-purple) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  width: 100%;
+  height: 36px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.ms-footer-action:hover {
+  color: var(--ms-purple-hover) !important;
+  text-decoration: underline !important;
+}
+
+/* ==========================================================================
+   Active Thread Screen Styles
+   ========================================================================== */
 .ms-thread-view {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: #ffffff;
 }
 
+/* Thread Header Area */
 .ms-thread-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px;
-  border-bottom: 1px solid #f0f0f0;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 10;
 }
 
-.ms-back-arrow {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
+.ms-thread-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.ms-thread-title {
-  font-size: 14px;
-  font-weight: 600;
+.ms-back-button {
+  margin-right: 2px;
 }
 
+.ms-thread-header-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms-thread-name {
+  color: var(--ms-text-dark);
+  font-size: 13.5px;
+  line-height: 18px;
+}
+
+.ms-thread-status {
+  color: var(--ms-text-muted);
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.ms-thread-header-actions {
+  display: flex;
+  gap: 2px;
+}
+
+/* Scrollable Message History Area */
 .ms-thread-messages {
   flex: 1;
-  padding: 12px;
+  padding: 16px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   background: #fdfdfd;
 }
 
-.ms-bubble-row { display: flex; width: 100%; }
-.ms-bubble-row.me { justify-content: flex-end; }
-
-.ms-bubble {
-  max-width: 70%;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-.ms-bubble.them { background: #f1f0f0; color: black; }
-.ms-bubble.me { background: var(--ms-purple); color: white; }
-
-.ms-thread-input-box {
-  padding: 10px;
+/* Message rows container */
+.ms-bubble-row {
   display: flex;
   gap: 8px;
-  border-top: 1px solid #f0f0f0;
+  width: 100%;
+  animation: messageSlideIn 0.25s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
 }
 
-.ms-thread-input-box input {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid #d2d2d2;
-  border-radius: 4px;
+.ms-bubble-row.me {
+  justify-content: flex-end;
 }
 
-.ms-thread-input-box button {
-  background: var(--ms-purple);
-  color: white;
-  border: none;
-  padding: 0 14px;
-  border-radius: 4px;
+.ms-bubble-row.them {
+  justify-content: flex-start;
+}
+
+/* Avatar for incoming message */
+.ms-bubble-avatar {
+  align-self: flex-end;
+  margin-bottom: 16px; /* offset the time text height */
+}
+
+/* Bubble + Time wrapper */
+.ms-bubble-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 72%;
+}
+
+.ms-bubble-container.me {
+  align-items: flex-end;
+}
+
+.ms-bubble-container.them {
+  align-items: flex-start;
+}
+
+/* The actual text bubbles */
+.ms-bubble {
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 17px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ms-bubble.them {
+  background-color: var(--ms-bg-light);
+  color: var(--ms-text-dark);
+  border-radius: 8px 8px 8px 2px;
+}
+
+.ms-bubble.me {
+  background-color: var(--ms-purple);
+  color: #ffffff;
+  border-radius: 8px 8px 2px 8px;
+}
+
+/* Small timestamp under bubbles */
+.ms-bubble-time {
+  font-size: 10px;
+  color: var(--ms-text-muted);
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+/* Message entrance micro-animation */
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bottom Chat Input area */
+.ms-thread-input-area {
+  padding: 10px 14px 14px 14px;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ms-input-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.ms-thread-input-box {
+  width: 100%;
+}
+
+/* Send button styling */
+.ms-send-icon-button {
+  color: var(--ms-text-muted) !important;
+  cursor: not-allowed;
+  transition: color 0.2s ease, transform 0.2s ease !important;
+}
+
+.ms-send-icon-button.active {
+  color: var(--ms-purple) !important;
   cursor: pointer;
 }
 
-.ms-chat-footer {
-  padding: 12px;
-  border-top: 1px solid #f0f0f0;
-  text-align: center;
+.ms-send-icon-button.active:hover {
+  transform: scale(1.1);
+  color: var(--ms-purple-hover) !important;
 }
 
-.ms-footer-action {
-  background: none;
-  border: none;
-  color: var(--ms-purple);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
+/* Styling native-looking scrollbars */
+.ms-chat-body::-webkit-scrollbar,
+.ms-thread-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ms-chat-body::-webkit-scrollbar-track,
+.ms-thread-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ms-chat-body::-webkit-scrollbar-thumb,
+.ms-thread-messages::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+.ms-chat-body::-webkit-scrollbar-thumb:hover,
+.ms-thread-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }
