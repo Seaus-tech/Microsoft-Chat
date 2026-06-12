@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://microsoft.com" 
+         xmlns:uap="http://microsoft.com" 
+         xmlns:rescap="http://microsoft.com/restrictedcapabilities">
+  
+  
+
+  <Properties>
+    <DisplayName>Chat</DisplayName>
+    <PublisherDisplayName>Microsoft Corporation (Replicated)</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us"/>
+  </Resources>
+
+  <Applications>
+    <!-- EntryPoint="windows.EdgeWebView" explicitly launches borderless WebView2 instead of a browser -->
+    <Application Id="App" 
+                 EntryPoint="windows.EdgeWebView" 
+                 StartPage="WebViewContainer\index.html">
+      <uap:VisualElements DisplayName="Chat" 
+                          Description="Lightweight chat experience" 
+                          BackgroundColor="#464EB8" 
+                          Square150x150Logo="Assets\Square44x44Logo.png" 
+                          Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile ShortName="Chat" />
+        <uap:SplashScreen Image="Assets\StoreLogo.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <uap:Capability Name="microphone"/>
+    <uap:Capability Name="webcam"/>
+  </Capabilities>
+</Package>

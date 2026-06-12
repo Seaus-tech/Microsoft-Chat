@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Chat</title>
+    <style>
+        body,
+        html,
+        iframe {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Points directly to Microsoft's consumer lightweight Teams endpoint -->
+    <iframe id="teamsFrame" src="https://live.com" allow="microphone; camera; clipboard-write"></iframe>
+
+    <script>
+        // Restricts browser shortcuts to enforce a native app feel
+        window.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) || e.key === 'F5') {
+                e.preventDefault();
+            }
+        });
+        // Disables right-click context menus
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
+</body>
+
+</html>
