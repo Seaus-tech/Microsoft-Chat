@@ -1,18 +1,38 @@
 Add-Type -AssemblyName PresentationFramework, System.Windows.Forms
 
-# Dynamically discover the current repository path
+# 📂 Identify repository paths
 $repoDir = $PSScriptRoot
-$configFile = Join-Path $repoDir "config.json"
+$winFormsDll = Join-Path $repoDir "Microsoft.Web.WebView2.WinForms.dll"
+$loaderDll = Join-Path $repoDir "WebView2Loader.dll"
+
+# Inject the repository directory containing WebView2Loader.dll into the process path env
+if (Test-Path $loaderDll) {
+    $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", "Process")
+    [System.Environment]::SetEnvironmentVariable("PATH", "$repoDir;$currentPath", "Process")
+}
+else {
+    [System.Windows.Forms.MessageBox]::Show("Could not find WebView2Loader.dll in the App directory.", "Missing DLL")
+    Exit
+}
+
+# Bind to the primary WinForms wrapper assembly
+if (Test-Path $winFormsDll) {
+    [System.Reflection.Assembly]::LoadFrom($winFormsDll) | Out-Null
+}
+else {
+    [System.Windows.Forms.MessageBox]::Show("Could not find Microsoft.Web.WebView2.WinForms.dll in the App directory.", "Missing DLL")
+    Exit
+}
+
+# Explicitly formatted clean consumer URL parameters
+$targetUrl = "https://live.com"
 $cacheDir = Join-Path $repoDir "ChatCache"
 
-# Load Configurations
-$config = Get-Content -Raw -Path $configFile | ConvertFrom-Json
-
-# Build a native Windows Form frame
+# Build native Windows Form layout frame
 $form = New-Object System.Windows.Forms.Form
-$form.Text = $config.title
-$form.Width = $config.width
-$form.Height = $config.height
+$form.Text = "Chat"
+$form.Width = 420
+$form.Height = 680
 $form.StartPosition = "CenterScreen"
 $form.FormBorderStyle = "FixedSingle"
 $form.MaximizeBox = $false
@@ -21,25 +41,28 @@ $form.MaximizeBox = $false
 $webView = New-Object Microsoft.Web.WebView2.WinForms.WebView2
 $webView.Dock = "Fill"
 
-# Force WebView2 to use the isolated local repository cache path
-$envPath = [Microsoft.Web.WebView2.Core.CoreWebView2Environment]::CreateAsync($null, $cacheDir)
-$task = $webView.EnsureCoreWebView2Async($envPath.Result)
+# Apply explicit non-admin environment creation parameters
+$envTask = [Microsoft.Web.WebView2.Core.CoreWebView2Environment]::CreateAsync($null, $cacheDir)
+$webView.EnsureCoreWebView2Async($envTask.GetAwaiter().GetResult()) | Out-Null
 
-# Wait briefly for WebView2 to spin up in memory
 while (-not $webView.CoreWebView2) {
     [System.Windows.Forms.Application]::DoEvents()
     Start-Sleep -Milliseconds 50
 }
 
-# Apply Native UI Restrictions
+# 🌐 FORCE AGENT IDENTITY (Prevents the server redirect to Outlook)
+$edgeAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0"
+$webView.CoreWebView2.Settings.UserAgent = $edgeAgent
+
+# Apply UI Layout locks
 $webView.CoreWebView2.Settings.IsZoomControlEnabled = $false
 $webView.CoreWebView2.Settings.IsStatusBarEnabled = $false
 $webView.CoreWebView2.Settings.AreDevToolsEnabled = $false
 $webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = $false
 
-# Navigate directly to the original Microsoft Teams consumer core 
-$webView.Source = New-Object System.Uri($config.url)
+# Launch navigation string
+$webView.Source = New-Object System.Uri($targetUrl)
 
-# Render everything on screen
+# Render on screen
 $form.Controls.Add($webView)
 [System.Windows.Forms.Application]::Run($form)
