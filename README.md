@@ -4,7 +4,7 @@
   <strong>A high-fidelity desktop replication of the Microsoft Teams Chat user interface, built with Tauri, React, and Fluent UI.</strong>
 </p>
 
-<p align="center>
+<p align="center">
   <img src="https://img.shields.io/badge/Desktop-Tauri-FFC131?style=flat-square&logo=tauri&logoColor=white" alt="Tauri" />
   <img src="https://img.shields.io/badge/Framework-React-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/Language-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
